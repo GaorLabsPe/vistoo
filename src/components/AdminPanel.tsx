@@ -327,40 +327,28 @@ export default function AdminPanel() {
           
           {/* Dashboard Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-            <div className="bg-white p-[18px] sm:p-5 rounded-[16px] border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] flex flex-col border-l-[3px] border-l-slate-400 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-[1px] transition-all cursor-default">
-              <div className="flex items-center gap-1.5 mb-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.06em]">Total Leads</span>
-              </div>
-              <div className="text-[32px] font-display font-bold text-slate-900 leading-none mb-1.5">{totalLeads}</div>
-              <div className="text-xs font-medium text-emerald-500">+12% este mes</div>
+            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-slate-400 hover:shadow-md transition-all cursor-default">
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Total Leads</div>
+              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{totalLeads}</div>
+              <div className="text-[13px] font-medium text-emerald-500">+12% este mes</div>
             </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[16px] border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] flex flex-col border-l-[3px] border-l-blue-600 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-[1px] transition-all cursor-default">
-              <div className="flex items-center gap-1.5 mb-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.06em]">Nuevos / Pendientes</span>
-              </div>
-              <div className="text-[32px] font-display font-bold text-slate-900 leading-none mb-1.5">{pendingLeads}</div>
-              <div className="text-xs font-medium text-blue-600">Atención requerida</div>
+            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-blue-600 hover:shadow-md transition-all cursor-default">
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Nuevos / Pendientes</div>
+              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{pendingLeads}</div>
+              <div className="text-[13px] font-medium text-blue-600">Atención requerida</div>
             </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[16px] border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] flex flex-col border-l-[3px] border-l-amber-500 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-[1px] transition-all cursor-default">
-              <div className="flex items-center gap-1.5 mb-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.06em]">En Gestión</span>
-              </div>
-              <div className="text-[32px] font-display font-bold text-slate-900 leading-none mb-1.5">{contactedLeads}</div>
-              <div className="text-xs font-medium text-amber-500">En proceso</div>
+            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-amber-500 hover:shadow-md transition-all cursor-default">
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">En Gestión</div>
+              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{contactedLeads}</div>
+              <div className="text-[13px] font-medium text-amber-500">En proceso</div>
             </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[16px] border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] flex flex-col border-l-[3px] border-l-emerald-500 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-[1px] transition-all cursor-default">
-              <div className="flex items-center gap-1.5 mb-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.06em]">Convertidos</span>
+            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-emerald-500 hover:shadow-md transition-all cursor-default">
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Convertidos</div>
+              <div className="flex items-baseline gap-2 mb-2">
+                <div className="text-[36px] font-display font-bold text-slate-900 leading-none">{completedLeads}</div>
+                <div className="text-lg font-bold text-emerald-500">({conversionRate}%)</div>
               </div>
-              <div className="flex items-baseline gap-2 mb-1.5">
-                <div className="text-[32px] font-display font-bold text-slate-900 leading-none">{completedLeads}</div>
-                <div className="text-base font-semibold text-emerald-500">({conversionRate}%)</div>
-              </div>
-              <div className="text-xs font-medium text-emerald-500">Tasa de conversión</div>
+              <div className="text-[13px] font-medium text-emerald-500">Tasa de conversión</div>
             </div>
           </div>
 
@@ -369,14 +357,14 @@ export default function AdminPanel() {
             
             {/* Tabs & Filters */}
             <div className="border-b border-slate-200 px-5 py-4 flex flex-wrap gap-4 items-center justify-between">
-              <div className="flex gap-1">
-                <button onClick={() => setActiveTab('all')} className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${activeTab === 'all' ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>Todos</button>
-                <button onClick={() => setActiveTab('pending')} className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${activeTab === 'pending' ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>Nuevos</button>
-                <button onClick={() => setActiveTab('contacted')} className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${activeTab === 'contacted' ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>En Gestión</button>
-                <button onClick={() => setActiveTab('completed')} className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${activeTab === 'completed' ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>Clientes</button>
+              <div className="flex gap-2 p-1 border border-slate-200 rounded-xl bg-white shadow-sm">
+                <button onClick={() => setActiveTab('all')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'all' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Todos</button>
+                <button onClick={() => setActiveTab('pending')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'pending' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Nuevos</button>
+                <button onClick={() => setActiveTab('contacted')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'contacted' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>En Gestión</button>
+                <button onClick={() => setActiveTab('completed')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'completed' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Clientes</button>
               </div>
-              <button className="flex items-center gap-1.5 text-[12px] font-medium text-slate-500 hover:text-blue-600 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-colors">
-                <Filter size={12} /> Filtrar
+              <button className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-700 hover:text-slate-900 px-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 transition-colors">
+                <Filter size={14} /> Filtrar
               </button>
             </div>
 
