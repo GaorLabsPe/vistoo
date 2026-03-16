@@ -6,9 +6,9 @@ import {
   Image as ImageIcon, CheckCircle, Clock3, X, LogOut, ExternalLink,
   LayoutDashboard, Users, Settings, Filter,
   MessageCircle, ChevronRight, Building2, Calendar, ArrowUpRight,
-  PlayCircle, MoreHorizontal, AlertCircle, CheckCircle2, User
+  PlayCircle, MoreHorizontal, AlertCircle, CheckCircle2, User,
+  TrendingUp, ArrowRight, Menu
 } from 'lucide-react';
-import Logo from './Logo';
 
 // Datos de prueba para que el usuario pueda ver el diseño si su base de datos está vacía
 const MOCK_CLIENTS = [
@@ -65,6 +65,7 @@ export default function AdminPanel() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // all, pending, contacted, completed
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Simple auth for demo purposes using environment variable
   const handleLogin = (e: React.FormEvent) => {
@@ -99,13 +100,7 @@ export default function AdminPanel() {
     // Si estamos en modo demo, solo actualizamos el estado local
     if (isDemoMode || id.startsWith('demo-')) {
       const updateList = (list: any[]) => list.map(c => c.id === id ? { ...c, status: newStatus } : c);
-      if (isDemoMode) {
-        // En un caso real de demo mode, podríamos tener un estado separado para los mocks, 
-        // pero para simplificar, si es un ID de demo, solo cerramos el modal o actualizamos la vista
-        setClients(updateList(clients));
-      } else {
-        setClients(updateList(clients));
-      }
+      setClients(updateList(clients));
       if (selectedClient?.id === id) {
         setSelectedClient({ ...selectedClient, status: newStatus });
       }
@@ -157,40 +152,47 @@ export default function AdminPanel() {
 
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 bg-slate-50 flex items-center justify-center p-4 font-sans z-[100]">
+      <div className="fixed inset-0 bg-[#0A0A0B] flex items-center justify-center p-4 font-sans z-[100] overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-bg-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-bg-pulse" style={{ animationDelay: '2s' }}></div>
+        
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white border border-slate-200 p-8 sm:p-10 rounded-2xl w-full max-w-[400px] shadow-xl"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl w-full max-w-[420px] shadow-2xl relative z-10"
         >
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center font-display font-bold text-2xl text-white shadow-md">
+          <div className="text-center mb-10">
+            <div className="flex justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center font-display font-bold text-3xl text-white shadow-lg shadow-blue-500/30 ring-1 ring-white/20">
                 V
               </div>
             </div>
-            <h1 className="text-2xl font-display font-bold text-slate-900 mb-2 tracking-tight">Vistoo CRM</h1>
-            <p className="text-slate-500 text-sm">Ingresa tu contraseña para continuar</p>
+            <h1 className="text-3xl font-display font-bold text-white mb-2 tracking-tight">Vistoo CRM</h1>
+            <p className="text-zinc-400 text-sm">Acceso exclusivo para administradores</p>
           </div>
           
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Contraseña de acceso</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 bg-white border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900 text-sm"
-                required
-              />
+              <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 ml-1">Contraseña de acceso</label>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-5 py-3.5 bg-zinc-950/50 border border-white/10 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-white text-sm placeholder:text-zinc-600"
+                  required
+                />
+              </div>
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-sm text-sm"
+              className="w-full bg-white hover:bg-zinc-100 text-zinc-900 font-semibold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-white/10 text-sm flex items-center justify-center gap-2 group"
             >
               Iniciar Sesión
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
         </motion.div>
@@ -199,40 +201,39 @@ export default function AdminPanel() {
   }
 
   const getAvatarGradient = (name: string) => {
-    const colors = [
-      'bg-blue-600',
-      'bg-emerald-500',
-      'bg-amber-500',
-      'bg-rose-500',
-      'bg-indigo-500',
-      'bg-teal-500',
-      'bg-orange-500'
+    const gradients = [
+      'bg-gradient-to-br from-blue-500 to-indigo-600',
+      'bg-gradient-to-br from-emerald-400 to-teal-600',
+      'bg-gradient-to-br from-amber-400 to-orange-600',
+      'bg-gradient-to-br from-rose-400 to-red-600',
+      'bg-gradient-to-br from-violet-500 to-purple-700',
+      'bg-gradient-to-br from-cyan-400 to-blue-600',
     ];
-    if (!name) return colors[0];
+    if (!name) return gradients[0];
     const charCode = name.charCodeAt(0);
-    return colors[charCode % colors.length];
+    return gradients[charCode % gradients.length];
   };
 
   const getStatusBadge = (status: string) => {
     switch(status) {
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-emerald-600 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
             Cliente Activo
           </span>
         );
       case 'contacted':
         return (
-          <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-amber-500 whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-200/60 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0 animate-pulse"></span>
             En Gestión
           </span>
         );
       case 'pending':
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-blue-600 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200/60 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
             Nuevo Lead
           </span>
@@ -241,147 +242,190 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#F8FAFF] flex font-sans text-slate-900 z-[100]">
+    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900 selection:bg-blue-200 selection:text-blue-900">
+      
+      {/* MOBILE OVERLAY */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* SIDEBAR */}
-      <aside className="w-[220px] bg-[#0F1117] text-slate-300 flex flex-col hidden md:flex shrink-0 relative sidebar-gradient-border border-r border-white/5">
-        <div className="flex items-center gap-2.5 px-2 py-1 mb-5 mx-3 mt-5 border-b border-white/5 pb-5">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-display font-bold text-sm text-white shadow-[0_4px_12px_rgba(37,99,235,0.35)]">
+      <aside className={`w-72 bg-[#0A0A0B] text-zinc-400 flex-col flex shrink-0 fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-20 flex items-center px-8 border-b border-white/5 shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center font-display font-bold text-lg text-white shadow-lg shadow-blue-500/20 mr-3 ring-1 ring-white/20">
             V
           </div>
-          <span className="font-display font-bold text-base text-white tracking-tight">Vistoo CRM</span>
+          <span className="font-display font-bold text-xl text-white tracking-tight">Vistoo CRM</span>
+          <button className="ml-auto md:hidden text-zinc-500 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={20} />
+          </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto py-2 px-3 custom-scrollbar">
-          <div className="text-[10px] font-semibold text-white/20 uppercase tracking-[0.1em] mb-1.5 px-2">Menú Principal</div>
-          <nav className="space-y-0.5 mb-6">
-            <button className="w-full flex items-center gap-2.5 bg-blue-600/20 text-blue-500 px-2.5 py-[9px] rounded-lg font-medium transition-colors text-[13.5px]">
-              <LayoutDashboard size={15} />
+        <div className="flex-1 overflow-y-auto py-8 px-4 custom-scrollbar">
+          <div className="text-[11px] font-bold text-zinc-600 uppercase tracking-widest mb-4 px-4">Plataforma</div>
+          <nav className="space-y-1.5 mb-10">
+            <button className="w-full flex items-center gap-3 bg-white/10 text-white px-4 py-3 rounded-xl font-medium transition-all text-sm ring-1 ring-white/5 shadow-sm">
+              <LayoutDashboard size={18} className="text-blue-400" />
               Panel de Leads
-              <span className="ml-auto bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">3</span>
+              <span className="ml-auto bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{pendingLeads}</span>
             </button>
-            <button className="w-full flex items-center gap-2.5 text-white/45 hover:bg-white/5 hover:backdrop-blur-md hover:text-white/75 px-2.5 py-[9px] rounded-lg font-medium transition-colors text-[13.5px]">
-              <Users size={15} />
+            <button className="w-full flex items-center gap-3 text-zinc-400 hover:bg-white/5 hover:text-zinc-200 px-4 py-3 rounded-xl font-medium transition-all text-sm">
+              <Users size={18} />
               Directorio
             </button>
           </nav>
 
-          <div className="text-[10px] font-semibold text-white/20 uppercase tracking-[0.1em] mb-1.5 px-2">Configuración</div>
-          <nav className="space-y-0.5">
-            <button className="w-full flex items-center gap-2.5 text-white/45 hover:bg-white/5 hover:backdrop-blur-md hover:text-white/75 px-2.5 py-[9px] rounded-lg font-medium transition-colors text-[13.5px]">
-              <Settings size={15} />
+          <div className="text-[11px] font-bold text-zinc-600 uppercase tracking-widest mb-4 px-4">Configuración</div>
+          <nav className="space-y-1.5">
+            <button className="w-full flex items-center gap-3 text-zinc-400 hover:bg-white/5 hover:text-zinc-200 px-4 py-3 rounded-xl font-medium transition-all text-sm">
+              <Settings size={18} />
               Ajustes
             </button>
           </nav>
         </div>
 
-        <div className="pt-4 border-t border-white/5 mx-3 mb-5">
-          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 hover:backdrop-blur-md cursor-pointer transition-colors group">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-[11px] shrink-0">
+        <div className="p-4 border-t border-white/5 shrink-0 bg-white/[0.02]">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer transition-colors group">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-white font-bold text-xs shrink-0 ring-1 ring-white/10">
               AD
             </div>
             <div className="overflow-hidden flex-1">
-              <div className="text-xs font-semibold text-white/75 truncate leading-[1.2]">Admin</div>
-              <div className="text-[11px] text-white/30 truncate">Administrador</div>
+              <div className="text-sm font-semibold text-zinc-200 truncate">Administrador</div>
+              <div className="text-[11px] text-zinc-500 truncate">admin@vistoo.com</div>
             </div>
             <button 
               onClick={() => setIsAuthenticated(false)}
-              className="text-white/30 hover:text-white opacity-0 group-hover:opacity-100 transition-all"
+              className="text-zinc-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
               title="Cerrar Sesión"
             >
-              <LogOut size={14} />
+              <LogOut size={16} />
             </button>
           </div>
         </div>
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#F8FAFF] relative">
+      <main className="flex-1 flex flex-col min-w-0 md:ml-72 min-h-screen relative">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-30 shrink-0 supports-[backdrop-filter]:bg-white/60">
           <div className="flex items-center gap-4">
-            <button className="md:hidden text-slate-500 hover:text-slate-700">
-              <LayoutDashboard size={24} />
+            <button 
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={20} />
             </button>
-            <h1 className="text-xl font-semibold text-slate-800 hidden sm:block">Gestión de Solicitudes</h1>
+            <h1 className="text-2xl font-display font-bold text-slate-900 hidden sm:block tracking-tight">Gestión de Solicitudes</h1>
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative hidden sm:block w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <div className="relative hidden md:block w-80 group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
               <input 
                 type="text" 
-                placeholder="Buscar clientes..." 
+                placeholder="Buscar clientes, correos..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-slate-100 border-transparent rounded-lg focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                className="w-full pl-11 pr-4 py-2.5 bg-slate-100/50 border border-slate-200 rounded-full focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium placeholder:text-slate-400"
               />
             </div>
-            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm sm:hidden">
+            <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm sm:hidden">
               AD
             </div>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+        <div className="flex-1 p-4 sm:p-8 overflow-x-hidden max-w-[1600px] mx-auto w-full">
           
           {/* Dashboard Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col hover:shadow-md transition-all cursor-default">
-              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Total Leads</div>
-              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{totalLeads}</div>
-              <div className="text-[13px] font-medium text-emerald-500">+12% este mes</div>
-            </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-blue-600 hover:shadow-md transition-all cursor-default">
-              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Nuevos / Pendientes</div>
-              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{pendingLeads}</div>
-              <div className="text-[13px] font-medium text-blue-600">Atención requerida</div>
-            </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-amber-500 hover:shadow-md transition-all cursor-default">
-              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">En Gestión</div>
-              <div className="text-[36px] font-display font-bold text-slate-900 leading-none mb-2">{contactedLeads}</div>
-              <div className="text-[13px] font-medium text-amber-500">En proceso</div>
-            </div>
-            <div className="bg-white p-[18px] sm:p-5 rounded-[12px] border border-slate-200 shadow-sm flex flex-col border-l-[4px] border-l-emerald-500 hover:shadow-md transition-all cursor-default">
-              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.08em] mb-3">Convertidos</div>
-              <div className="flex items-baseline gap-2 mb-2">
-                <div className="text-[36px] font-display font-bold text-slate-900 leading-none">{completedLeads}</div>
-                <div className="text-lg font-bold text-emerald-500">({conversionRate}%)</div>
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Leads</div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"><Users size={16}/></div>
               </div>
-              <div className="text-[13px] font-medium text-emerald-500">Tasa de conversión</div>
+              <div className="text-4xl font-display font-bold text-slate-900 mb-2">{totalLeads}</div>
+              <div className="flex items-center gap-1.5 text-sm font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-0.5 rounded-md">
+                <TrendingUp size={14} /> +12% este mes
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nuevos</div>
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><AlertCircle size={16}/></div>
+              </div>
+              <div className="text-4xl font-display font-bold text-slate-900 mb-2 relative z-10">{pendingLeads}</div>
+              <div className="text-sm font-medium text-slate-500 relative z-10">Atención requerida</div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">En Gestión</div>
+                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600"><Clock3 size={16}/></div>
+              </div>
+              <div className="text-4xl font-display font-bold text-slate-900 mb-2 relative z-10">{contactedLeads}</div>
+              <div className="text-sm font-medium text-slate-500 relative z-10">En proceso de venta</div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Convertidos</div>
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><CheckCircle2 size={16}/></div>
+              </div>
+              <div className="flex items-baseline gap-2 mb-2 relative z-10">
+                <div className="text-4xl font-display font-bold text-slate-900">{completedLeads}</div>
+                <div className="text-lg font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">({conversionRate}%)</div>
+              </div>
+              <div className="text-sm font-medium text-slate-500 relative z-10">Tasa de conversión</div>
             </div>
           </div>
 
           {/* Table Area */}
-          <div className="bg-white rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border border-slate-200 flex flex-col overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
             
             {/* Tabs & Filters */}
-            <div className="border-b border-slate-200 px-5 py-4 flex flex-wrap gap-4 items-center justify-between">
-              <div className="flex gap-2 p-1 border border-slate-200 rounded-xl bg-white shadow-sm">
-                <button onClick={() => setActiveTab('all')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'all' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Todos</button>
-                <button onClick={() => setActiveTab('pending')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'pending' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Nuevos</button>
-                <button onClick={() => setActiveTab('contacted')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'contacted' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>En Gestión</button>
-                <button onClick={() => setActiveTab('completed')} className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${activeTab === 'completed' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-900 border border-transparent'}`}>Clientes</button>
+            <div className="border-b border-slate-200/80 px-6 py-5 flex flex-wrap gap-4 items-center justify-between bg-white">
+              <div className="flex gap-1 p-1 bg-slate-100/80 rounded-xl">
+                <button onClick={() => setActiveTab('all')} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'all' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}>Todos</button>
+                <button onClick={() => setActiveTab('pending')} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'pending' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}>Nuevos</button>
+                <button onClick={() => setActiveTab('contacted')} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'contacted' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}>En Gestión</button>
+                <button onClick={() => setActiveTab('completed')} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'completed' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}>Clientes</button>
               </div>
-              <button className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-700 hover:text-slate-900 px-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 transition-colors">
-                <Filter size={14} /> Filtrar
+              <button className="flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 transition-all active:scale-95">
+                <Filter size={16} /> Filtrar
               </button>
             </div>
 
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="flex justify-center items-center h-80">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                  <div className="text-sm font-medium text-slate-500">Cargando datos...</div>
+                </div>
               </div>
             ) : displayClients.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
-                  <LayoutDashboard className="text-slate-400" size={24} />
+              <div className="flex flex-col items-center justify-center py-32 px-4 text-center">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 border border-slate-200 shadow-sm">
+                  <LayoutDashboard className="text-slate-400" size={32} />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800 mb-1">Tu CRM está listo</h3>
-                <p className="text-slate-500 text-sm max-w-sm mb-6">Aún no tienes solicitudes registradas. Cuando los usuarios completen el formulario, aparecerán aquí.</p>
+                <h3 className="text-xl font-display font-bold text-slate-900 mb-2">Tu CRM está listo</h3>
+                <p className="text-slate-500 text-base max-w-md mb-8">Aún no tienes solicitudes registradas. Cuando los usuarios completen el formulario, aparecerán aquí.</p>
                 <button 
                   onClick={enableDemoMode}
-                  className="bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium py-2 px-4 rounded-lg transition-all shadow-sm border border-slate-200 flex items-center gap-2"
+                  className="bg-white hover:bg-slate-50 text-slate-800 text-sm font-semibold py-3 px-6 rounded-xl transition-all shadow-sm border border-slate-200 flex items-center gap-2 hover:shadow-md active:scale-95"
                 >
-                  <PlayCircle size={16} className="text-blue-600" />
+                  <PlayCircle size={18} className="text-blue-600" />
                   Cargar Datos de Prueba
                 </button>
               </div>
@@ -389,19 +433,20 @@ export default function AdminPanel() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="bg-[#FAFBFF] border-b border-slate-200 text-slate-400 text-[11px] uppercase tracking-[0.06em] font-semibold">
-                      <th className="px-5 py-2.5">Negocio / Contacto</th>
-                      <th className="px-5 py-2.5">Ubicación</th>
-                      <th className="px-5 py-2.5">Fecha</th>
-                      <th className="px-5 py-2.5">Estado</th>
-                      <th className="px-5 py-2.5 text-right">Acciones</th>
+                    <tr className="bg-white border-b border-slate-200/80 text-slate-500 text-xs uppercase tracking-wider font-bold">
+                      <th className="px-6 py-5">Negocio / Contacto</th>
+                      <th className="px-6 py-5">Ubicación</th>
+                      <th className="px-6 py-5">Fecha de Ingreso</th>
+                      <th className="px-6 py-5">Estado</th>
+                      <th className="px-6 py-5 text-right">Acciones</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200">
+                  <tbody className="divide-y divide-slate-100">
                     {filteredClients.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-slate-500 text-sm">
-                          No se encontraron resultados para tu búsqueda.
+                        <td colSpan={5} className="px-6 py-24 text-center">
+                          <div className="text-slate-400 mb-2"><Search size={32} className="mx-auto opacity-50" /></div>
+                          <div className="text-slate-600 font-medium">No se encontraron resultados para tu búsqueda.</div>
                         </td>
                       </tr>
                     ) : (
@@ -409,60 +454,64 @@ export default function AdminPanel() {
                         const gradientClass = getAvatarGradient(client.businessName || '');
 
                         return (
-                        <tr key={client.id} className="hover:bg-slate-50 transition-colors duration-200 group cursor-pointer" onClick={() => setSelectedClient(client)}>
-                          <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-[34px] h-[34px] rounded-[9px] ${gradientClass} flex items-center justify-center font-display font-bold text-xs text-white shrink-0`}>
+                        <tr key={client.id} className="hover:bg-slate-50/80 transition-colors duration-200 group cursor-pointer" onClick={() => setSelectedClient(client)}>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-11 h-11 rounded-xl ${gradientClass} flex items-center justify-center font-display font-bold text-sm text-white shrink-0 shadow-sm ring-1 ring-black/5`}>
                                 {client.businessName?.substring(0,2).toUpperCase() || 'NA'}
                               </div>
                               <div>
-                                <div className="font-semibold text-slate-900 text-[14px]">{client.businessName || 'Sin Nombre'}</div>
-                                <div className="text-[12px] text-slate-500 mt-px">
-                                  {client.ownerName}
+                                <div className="font-bold text-slate-900 text-sm mb-0.5">{client.businessName || 'Sin Nombre'}</div>
+                                <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                                  <User size={12} className="opacity-70"/> {client.ownerName}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-5 py-3.5">
-                            <div className="text-[13px] text-slate-500">{client.country || 'No especificado'}</div>
-                          </td>
-                          <td className="px-5 py-3.5">
-                            <div className="text-[12.5px] font-medium text-slate-900">
-                              {new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
+                              <MapPin size={14} className="text-slate-400" />
+                              {client.country || 'No especificado'}
                             </div>
-                            <div className="text-[11.5px] text-slate-400">
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-semibold text-slate-900">
+                              {new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                            <div className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-1">
+                              <Clock size={12} className="opacity-70"/>
                               {new Date(client.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                           </td>
-                          <td className="px-5 py-3.5">
+                          <td className="px-6 py-4">
                             {getStatusBadge(client.status)}
                           </td>
-                          <td className="px-5 py-3.5 text-right">
-                            <div className="flex items-center justify-end gap-1.5" onClick={e => e.stopPropagation()}>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
                               {client.phone && (
                                 <a 
                                   href={`https://wa.me/${client.phone.replace(/\D/g,'')}`} 
                                   target="_blank" 
                                   rel="noreferrer"
-                                  className="w-[30px] h-[30px] rounded-[7px] border border-slate-200 bg-white text-slate-400 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all"
+                                  className="w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-[#25D366] hover:text-[#25D366] hover:bg-[#25D366]/10 flex items-center justify-center transition-all shadow-sm"
                                   title="Enviar WhatsApp"
                                 >
-                                  <MessageCircle size={13} />
+                                  <MessageCircle size={16} />
                                 </a>
                               )}
                               <a 
                                 href={`mailto:${client.email}`}
-                                className="w-[30px] h-[30px] rounded-[7px] border border-slate-200 bg-white text-slate-400 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all"
+                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all shadow-sm"
                                 title="Enviar Email"
                               >
-                                <Mail size={13} />
+                                <Mail size={16} />
                               </a>
                               <button 
                                 onClick={() => setSelectedClient(client)}
-                                className="w-[30px] h-[30px] rounded-[7px] border border-slate-200 bg-white text-slate-400 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all"
+                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-slate-800 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-all shadow-sm"
                                 title="Ver Detalles"
                               >
-                                <ChevronRight size={13} />
+                                <ChevronRight size={16} />
                               </button>
                             </div>
                           </td>
@@ -484,196 +533,228 @@ export default function AdminPanel() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-50 flex justify-end"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex justify-end"
             onClick={() => setSelectedClient(null)}
           >
             <motion.div 
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="w-full max-w-[520px] bg-white h-full shadow-[-20px_0_60px_rgba(0,0,0,0.12)] border-l border-slate-200 overflow-y-auto flex flex-col font-sans"
+              initial={{ x: '100%', boxShadow: '-20px 0 40px rgba(0,0,0,0)' }}
+              animate={{ x: 0, boxShadow: '-20px 0 40px rgba(0,0,0,0.1)' }}
+              exit={{ x: '100%', boxShadow: '-20px 0 40px rgba(0,0,0,0)' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="w-full max-w-2xl bg-white h-full overflow-y-auto flex flex-col font-sans rounded-l-3xl"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-white border-b border-slate-200 px-6 pt-5 pb-0 shrink-0 sticky top-0 z-20">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3.5">
-                    <div className={`w-11 h-11 rounded-xl ${getAvatarGradient(selectedClient.businessName || '')} flex items-center justify-center font-display font-bold text-lg text-white shrink-0 shadow-[0_4px_12px_rgba(37,99,235,0.3)]`}>
+              <div className="bg-white px-8 pt-8 pb-0 shrink-0 sticky top-0 z-20 border-b border-slate-200/80">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-5">
+                    <div className={`w-16 h-16 rounded-2xl ${getAvatarGradient(selectedClient.businessName || '')} flex items-center justify-center font-display font-bold text-2xl text-white shrink-0 shadow-md ring-1 ring-black/5`}>
                       {selectedClient.businessName?.substring(0,1).toUpperCase() || 'N'}
                     </div>
                     <div>
-                      <h2 className="text-[18px] font-display font-bold text-slate-900 leading-tight">{selectedClient.businessName}</h2>
-                      <div className="flex items-center gap-2 mt-1">
+                      <h2 className="text-2xl font-display font-bold text-slate-900 leading-tight mb-1">{selectedClient.businessName}</h2>
+                      <div className="flex items-center gap-3 mt-2">
                         {getStatusBadge(selectedClient.status)}
-                        <span className="text-[11px] text-slate-500 flex items-center gap-1">📅 {new Date(selectedClient.created_at).toLocaleDateString()}</span>
+                        <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-full">
+                          <Calendar size={12} /> Ingresado el {new Date(selectedClient.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                   </div>
                   <button 
                     onClick={() => setSelectedClient(null)}
-                    className="w-8 h-8 flex items-center justify-center bg-transparent border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-lg text-slate-500 transition-colors"
+                    className="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-full transition-colors"
                   >
-                    <X size={14} />
+                    <X size={20} />
                   </button>
                 </div>
 
                 {/* Quick Action Bar */}
-                <div className="flex flex-wrap gap-2.5 mb-6">
+                <div className="flex flex-wrap gap-3 mb-8">
                   {selectedClient.phone && (
-                    <a href={`https://wa.me/${selectedClient.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20bd5a] active:scale-97 text-white px-3 py-1.5 rounded-full font-medium text-[12px] transition-all">
-                      <MessageCircle size={14} /> WhatsApp
+                    <a href={`https://wa.me/${selectedClient.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-95">
+                      <MessageCircle size={18} /> WhatsApp
                     </a>
                   )}
-                  <a href={`mailto:${selectedClient.email}`} className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 active:scale-97 text-white px-3 py-1.5 rounded-full font-medium text-[12px] transition-all">
-                    <Mail size={14} /> Email
+                  <a href={`mailto:${selectedClient.email}`} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-95">
+                    <Mail size={18} /> Email
                   </a>
                   {selectedClient.phone && (
-                    <a href={`tel:${selectedClient.phone}`} className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 active:scale-97 text-slate-700 px-3 py-1.5 rounded-full font-medium text-[12px] transition-all shadow-sm">
-                      <Phone size={14} /> Llamar
+                    <a href={`tel:${selectedClient.phone}`} className="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm active:scale-95">
+                      <Phone size={18} /> Llamar
                     </a>
                   )}
                   
-                  <button 
-                    onClick={() => updateStatus(selectedClient.id, 'pending')}
-                    className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 active:scale-97 text-slate-700 px-3 py-1.5 rounded-full font-medium text-[12px] transition-all shadow-sm ml-auto"
-                  >
-                    <ArrowUpRight size={14} /> Nuevo
-                  </button>
-                  <button 
-                    onClick={() => updateStatus(selectedClient.id, 'contacted')}
-                    className="flex items-center gap-1.5 bg-white border border-emerald-500 hover:bg-emerald-50 active:scale-97 text-emerald-600 px-3 py-1.5 rounded-full font-medium text-[12px] transition-all"
-                  >
-                    <CheckCircle2 size={14} /> En Gestión
-                  </button>
+                  <div className="ml-auto flex gap-2">
+                    <button 
+                      onClick={() => updateStatus(selectedClient.id, 'pending')}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm border ${selectedClient.status === 'pending' ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'}`}
+                    >
+                      <ArrowUpRight size={16} /> Nuevo
+                    </button>
+                    <button 
+                      onClick={() => updateStatus(selectedClient.id, 'contacted')}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm border ${selectedClient.status === 'contacted' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'}`}
+                    >
+                      <Clock3 size={16} /> En Gestión
+                    </button>
+                    <button 
+                      onClick={() => updateStatus(selectedClient.id, 'completed')}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm border ${selectedClient.status === 'completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'}`}
+                    >
+                      <CheckCircle2 size={16} /> Convertido
+                    </button>
+                  </div>
                 </div>
 
                 {/* Pipeline Steps */}
-                <div className="flex gap-6 -mb-px border-b border-slate-200">
-                  <div className="pb-3 text-[13px] font-semibold text-blue-600 border-b-2 border-blue-600 cursor-pointer whitespace-nowrap">Información General</div>
-                  <div className="pb-3 text-[13px] font-medium text-slate-500 hover:text-slate-900 border-b-2 border-transparent cursor-pointer whitespace-nowrap transition-colors">Archivos & Fotos</div>
-                  <div className="pb-3 text-[13px] font-medium text-slate-500 hover:text-slate-900 border-b-2 border-transparent cursor-pointer whitespace-nowrap transition-colors">Notas Internas</div>
+                <div className="flex gap-8 -mb-px">
+                  <div className="pb-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600 cursor-pointer whitespace-nowrap">Información General</div>
+                  <div className="pb-4 text-sm font-semibold text-slate-500 hover:text-slate-900 border-b-2 border-transparent cursor-pointer whitespace-nowrap transition-colors">Archivos & Fotos</div>
+                  <div className="pb-4 text-sm font-semibold text-slate-500 hover:text-slate-900 border-b-2 border-transparent cursor-pointer whitespace-nowrap transition-colors">Notas Internas</div>
                 </div>
               </div>
 
-              <div className="p-6 sm:p-8 flex-1 bg-white">
-                <div className="space-y-8">
+              <div className="p-8 flex-1 bg-[#F8FAFC]">
+                <div className="space-y-6">
                   
-                  {/* Contact Card */}
-                  <div>
-                    <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.08em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-slate-200"><User size={14}/> CONTACTO PRINCIPAL</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
-                      <div>
-                        <div className="text-[12px] text-slate-500 mb-0.5">Nombre Completo</div>
-                        <div className="text-[14px] font-medium text-slate-900">{selectedClient.ownerName}</div>
-                      </div>
-                      <div>
-                        <div className="text-[12px] text-slate-500 mb-0.5">Teléfono Directo</div>
-                        <div className="text-[14px] font-medium text-slate-900">{selectedClient.phone || 'No especificado'}</div>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <div className="text-[12px] text-slate-500 mb-0.5">Correo Electrónico</div>
-                        <div className="text-[14px] font-medium text-blue-600 hover:underline cursor-pointer">{selectedClient.email || 'No especificado'}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Business Card */}
-                  <div>
-                    <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.08em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-slate-200"><Building2 size={14}/> DATOS DEL NEGOCIO</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
-                      <div>
-                        <div className="text-[12px] text-slate-500 mb-0.5">Categoría / Industria</div>
-                        <div className="text-[14px] font-medium text-slate-900">{selectedClient.category || 'No especificada'}</div>
-                      </div>
-                      <div>
-                        <div className="text-[12px] text-slate-500 mb-0.5">Sitio Web</div>
-                        {selectedClient.website ? (
-                          <a href={selectedClient.website} target="_blank" rel="noreferrer" className="text-[14px] font-medium text-slate-400 hover:text-blue-600 hover:underline flex items-center gap-1 transition-colors">
-                            {selectedClient.website} <ArrowUpRight size={14} />
-                          </a>
-                        ) : (
-                          <div className="text-[14px] text-slate-400 italic">No cuenta con sitio web</div>
-                        )}
-                      </div>
-                      <div className="sm:col-span-2">
-                        <div className="text-[12px] text-slate-500 mb-0.5">Descripción / Notas del cliente</div>
-                        <div className="text-[13.5px] text-slate-900 leading-relaxed">
-                          {selectedClient.description || 'Sin notas adicionales.'}
+                  {/* Bento Grid Layout for Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {/* Contact Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm md:col-span-2">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                        <User size={16} className="text-blue-500"/> Contacto Principal
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div>
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Nombre Completo</div>
+                          <div className="text-sm font-bold text-slate-900">{selectedClient.ownerName}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Teléfono Directo</div>
+                          <div className="text-sm font-bold text-slate-900">{selectedClient.phone || 'No especificado'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Correo Electrónico</div>
+                          <div className="text-sm font-bold text-blue-600 hover:underline cursor-pointer truncate" title={selectedClient.email}>{selectedClient.email || 'No especificado'}</div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Location Card */}
-                  <div>
-                    <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.08em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-slate-200"><MapPin size={14}/> UBICACIÓN</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <div className="text-[12px] text-slate-500 mb-0.5">Dirección Exacta</div>
-                        <div className="text-[14px] font-medium text-slate-900 leading-snug">{selectedClient.address || 'No especificada'}</div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
+                    {/* Business Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                        <Building2 size={16} className="text-blue-500"/> Datos del Negocio
+                      </h3>
+                      <div className="space-y-5">
                         <div>
-                          <div className="text-[12px] text-slate-500 mb-0.5">Ciudad</div>
-                          <div className="text-[14px] font-medium text-slate-900">{selectedClient.city || '-'}</div>
-                        </div>
-                        <div>
-                          <div className="text-[12px] text-slate-500 mb-0.5">País</div>
-                          <div className="text-[14px] font-medium text-slate-900">{selectedClient.country || '-'}</div>
-                        </div>
-                      </div>
-                      
-                      {/* Horario Comercial */}
-                      <div className="pt-2">
-                        <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.08em] mb-3 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-slate-200"><Clock size={14}/> HORARIO COMERCIAL</h3>
-                        {selectedClient.schedule ? (
-                          <div className="space-y-2">
-                            {Object.entries(selectedClient.schedule).map(([day, data]: [string, any]) => {
-                              const dayNames: Record<string, string> = {
-                                monday: 'Lunes', tuesday: 'Martes', wednesday: 'Miércoles',
-                                thursday: 'Jueves', friday: 'Viernes', saturday: 'Sábado', sunday: 'Domingo'
-                              };
-                              return (
-                                <div key={day} className="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
-                                  <span className="text-[13px] text-slate-500">{dayNames[day]}</span>
-                                  <span className={`text-[13px] font-medium ${data.closed ? 'text-slate-400 italic' : 'text-slate-900'}`}>
-                                    {data.closed ? 'Cerrado' : `${data.open} - ${data.close}`}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Categoría / Industria</div>
+                          <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-bold">
+                            {selectedClient.category || 'No especificada'}
                           </div>
-                        ) : (
-                          <div className="text-[13.5px] text-slate-400 italic">No se especificaron horarios.</div>
-                        )}
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Sitio Web</div>
+                          {selectedClient.website ? (
+                            <a href={selectedClient.website} target="_blank" rel="noreferrer" className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1 transition-colors">
+                              {selectedClient.website} <ArrowUpRight size={14} />
+                            </a>
+                          ) : (
+                            <div className="text-sm text-slate-400 italic font-medium">No cuenta con sitio web</div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Photos Section */}
-                  <div>
-                    <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.08em] mb-5 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-slate-200"><ImageIcon size={14}/> ARCHIVOS ADJUNTOS ({selectedClient.photo_urls?.length || 0})</h3>
-                    {selectedClient.photo_urls && selectedClient.photo_urls.length > 0 ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        {selectedClient.photo_urls.map((url: string, i: number) => (
-                          <a key={i} href={url} target="_blank" rel="noreferrer" className="block aspect-square rounded-xl overflow-hidden border border-slate-200 hover:border-blue-500 transition-colors group relative shadow-sm">
-                            <img src={url} alt={`Foto ${i+1}`} className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                              <ExternalLink className="text-white" size={20} />
-                            </div>
-                          </a>
-                        ))}
+                    {/* Location Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                        <MapPin size={16} className="text-blue-500"/> Ubicación
+                      </h3>
+                      <div className="space-y-5">
+                        <div>
+                          <div className="text-xs font-semibold text-slate-500 mb-1.5">Dirección Exacta</div>
+                          <div className="text-sm font-bold text-slate-900 leading-snug">{selectedClient.address || 'No especificada'}</div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <div className="text-xs font-semibold text-slate-500 mb-1.5">Ciudad</div>
+                            <div className="text-sm font-bold text-slate-900">{selectedClient.city || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs font-semibold text-slate-500 mb-1.5">País</div>
+                            <div className="text-sm font-bold text-slate-900">{selectedClient.country || '-'}</div>
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="border border-dashed border-slate-300 rounded-lg p-8 flex flex-col items-center justify-center text-center">
-                        <ImageIcon className="text-slate-300 mb-2" size={32} />
-                        <div className="text-[14px] font-medium text-slate-600 mb-1">Sin fotografías</div>
-                        <div className="text-[13px] text-slate-400">El cliente no subió imágenes de su negocio.</div>
-                      </div>
-                    )}
-                  </div>
+                    </div>
 
+                    {/* Description Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm md:col-span-2">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <MessageCircle size={16} className="text-blue-500"/> Descripción / Notas del cliente
+                      </h3>
+                      <div className="text-sm text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-xl border border-slate-100 font-medium">
+                        {selectedClient.description || 'Sin notas adicionales.'}
+                      </div>
+                    </div>
+
+                    {/* Schedule Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm md:col-span-2">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                        <Clock size={16} className="text-blue-500"/> Horario Comercial
+                      </h3>
+                      {selectedClient.schedule ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                          {Object.entries(selectedClient.schedule).map(([day, data]: [string, any]) => {
+                            const dayNames: Record<string, string> = {
+                              monday: 'Lunes', tuesday: 'Martes', wednesday: 'Miércoles',
+                              thursday: 'Jueves', friday: 'Viernes', saturday: 'Sábado', sunday: 'Domingo'
+                            };
+                            return (
+                              <div key={day} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+                                <span className="text-sm font-medium text-slate-600">{dayNames[day]}</span>
+                                <span className={`text-sm font-bold ${data.closed ? 'text-slate-400 italic' : 'text-slate-900 bg-slate-50 px-2 py-1 rounded-md'}`}>
+                                  {data.closed ? 'Cerrado' : `${data.open} - ${data.close}`}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-slate-500 italic bg-slate-50 p-5 rounded-xl border border-slate-100 text-center font-medium">No se especificaron horarios.</div>
+                      )}
+                    </div>
+
+                    {/* Photos Section */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm md:col-span-2">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                        <ImageIcon size={16} className="text-blue-500"/> Archivos Adjuntos ({selectedClient.photo_urls?.length || 0})
+                      </h3>
+                      {selectedClient.photo_urls && selectedClient.photo_urls.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                          {selectedClient.photo_urls.map((url: string, i: number) => (
+                            <a key={i} href={url} target="_blank" rel="noreferrer" className="block aspect-square rounded-xl overflow-hidden border border-slate-200 hover:border-blue-500 transition-all group relative shadow-sm hover:shadow-md">
+                              <img src={url} alt={`Foto ${i+1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                              <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                                <ExternalLink className="text-white" size={24} />
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
+                          <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 ring-1 ring-slate-200">
+                            <ImageIcon className="text-slate-400" size={24} />
+                          </div>
+                          <div className="text-base font-bold text-slate-700 mb-1">Sin fotografías</div>
+                          <div className="text-sm font-medium text-slate-500">El cliente no subió imágenes de su negocio.</div>
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
                 </div>
               </div>
             </motion.div>

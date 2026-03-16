@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Building2, MapPin, Phone, Rocket, Sparkles, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, Building2, MapPin, Phone, Rocket, Sparkles, X, Shield } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import Logo from './Logo';
 
@@ -335,9 +336,19 @@ export default function RegistrationForm() {
       <div className="glow glow-1"></div>
       <div className="glow glow-2"></div>
 
-      <header>
+      <header className="portal-header">
         <div className="logo"><Logo /></div>
-        <div className="tagline">Visibilidad real para tu negocio 🌍</div>
+        <div className="flex items-center gap-4">
+          <div className="tagline hidden sm:block">Visibilidad real para tu negocio 🌍</div>
+          <Link 
+            to="/admin" 
+            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-slate-100 px-3 py-2 rounded-lg transition-all border border-slate-200 shadow-sm"
+            title="Panel de Administración"
+          >
+            <Shield size={18} />
+            <span className="text-sm font-medium hidden sm:block">Admin</span>
+          </Link>
+        </div>
       </header>
 
       <AnimatePresence mode="wait">
